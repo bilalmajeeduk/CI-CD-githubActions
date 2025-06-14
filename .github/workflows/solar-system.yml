@@ -61,7 +61,13 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 18
-    
+          #install cache to speed up workflows
+        - name: Cache NPM dependencies
+          uses: actions/cache@v3
+          with: 
+           path: node_modules
+           key: ${{runner.os}}-node-modules-${{hashFiles('package-lock.json')}} # name of the machine where it is running currently, whenever json file modify cache update
+
         - name: Install Dependencies
           run: npm install
     
