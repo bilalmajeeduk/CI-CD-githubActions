@@ -18,7 +18,7 @@ jobs:
         name: Unit Testing
         strategy:
             matrix:
-              nodejs_version: [18, 19, 20]
+              nodejs_version: [18,  20]
               os: [ubuntu-latest]
               exclude: 
                   - nodejs_version: 18
@@ -114,11 +114,20 @@ jobs:
                 ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
             
             # to run the docker we needs its IP: 
-              
+
             export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system-app)
             echo $IP
             
             echo Testing Image URL using wget 
             wget -q -O - 127.0.0.1:3000/live | grep live
+
+
+        - name: Container Registry Push
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            push: true
+            tags: |
+                ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
 
             
