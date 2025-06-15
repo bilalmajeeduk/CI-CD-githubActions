@@ -191,4 +191,46 @@ jobs:
                 namespace: metallb-system
               EOF
 
+          - name: Wait for MetalLB to be ready
+            run: |
+              kubectl rollout status deployment/metallb-controller -n metallb-system --timeout=2m
+              kubectl rollout status deployment/metallb-webhook    -n metallb-system --timeout=2m
+
+          - name: Configure MetalLB IP pool
+            run: |
+              cat <<EOF | kubectl apply -f -
+              apiVersion: metallb.io/v1beta1
+              kind: IPAddressPool
+              metadata:
+                name: kind-pool
+                namespace: metallb-system
+              spec:
+                addresses:
+                  - 172.18.0.240-172.18.0.250
+              EOF
+
+
+          - name: Configure MetalLB L2Advertisement
+            run: |
+              cat <<EOF | kubectl apply -f -
+              apiVersion: metallb.io/v1beta1
+              kind: L2Advertisement
+              metadata:
+                name: kind-adv
+                namespace: metallb-system
+              EOF
+              
+          - name: Replace Token in Manifest files
+            uses: cschleiden/replace-tokens@v1
+            with:
+              tokenPrefix: '_{_'
+              tokenSuffix: '_}_'
+              files: '["kubernetes/development/*.yaml"]'
+            env:
+              NAMESPACE: ${{ vars.NAMESPACE }}
+              REPLICAS: ${{ vars.REPLICAS }}
+              IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+              INGRESS_IP:
+
+
             
