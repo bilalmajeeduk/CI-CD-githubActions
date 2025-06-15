@@ -139,6 +139,8 @@ jobs:
             # https://github.com/marketplace/actions/kubectl-tool-installer
           - name: Install kubectl k8s CLI
             uses: azure/setup-kubectl@v4
+            with:
+              version: 'v1.28.0'
 
              # 2) Install KinD (Kubernetes-in-Docker)
           - name: Install KinD
@@ -162,7 +164,7 @@ jobs:
 
           - name: Fetchingg K8s kubernetes Cluster details info
             run: | 
-              kubectl version --short
+              kubectl version --client --short
               echo ***********************a***************A****
               kubectl get nodes
 
