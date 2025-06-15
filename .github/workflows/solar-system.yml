@@ -193,8 +193,8 @@ jobs:
 
           - name: Wait for MetalLB to be ready
             run: |
-              kubectl rollout status deployment/metallb-controller -n metallb-system --timeout=2m
-              kubectl rollout status deployment/metallb-webhook    -n metallb-system --timeout=2m
+              kubectl rollout status deployment/controller -n metallb-system --timeout=2m
+              kubectl rollout status deployment/controller    -n metallb-system --timeout=2m
 
           - name: Configure MetalLB IP pool
             run: |
@@ -219,7 +219,7 @@ jobs:
                 name: kind-adv
                 namespace: metallb-system
               EOF
-              
+
           - name: Replace Token in Manifest files
             uses: cschleiden/replace-tokens@v1
             with:
