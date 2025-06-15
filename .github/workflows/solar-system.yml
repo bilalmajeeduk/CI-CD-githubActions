@@ -188,7 +188,7 @@ jobs:
                 namespace: metallb-system
               spec:
                 addresses:
-              - 172.18.0.240-172.18.0.250
+                  - 172.18.0.240-172.18.0.250
               EOF
 
               cat <<EOF | kubectl apply -f -
