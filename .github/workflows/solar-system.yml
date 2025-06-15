@@ -142,7 +142,7 @@ jobs:
             with:
               version: 'v1.28.0'
 
-             # 2) Install KinD (Kubernetes-in-Docker)
+          # Install KinD (Kubernetes-in-Docker) if you don't have any local k8s cluster use this
           - name: Install KinD
             uses: engineerd/setup-kind@v0.5.0
             with:
@@ -169,5 +169,26 @@ jobs:
               kubectl version --client
               echo ***********************a***************A****
               kubectl get nodes
+
+          - name: Deploy MetalLB
+            run: |
+              kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
+              cat <<EOF | kubectl apply -f -
+              apiVersion: metallb.io/v1beta1
+              kind: IPAddressPool
+              metadata:
+                name: kind-pool
+                namespace: metallb-system
+              spec:
+                addresses:
+                  - 172.18.0.240-172.18.0.250
+              EOF
+              cat <<EOF | kubectl apply -f -
+              apiVersion: metallb.io/v1beta1
+              kind: L2Advertisement
+              metadata:
+                name: kind-adv
+                namespace: metallb-system
+              EOF
 
             
