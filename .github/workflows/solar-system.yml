@@ -198,6 +198,12 @@ jobs:
                 name: kind-adv
                 namespace: metallb-system
               EOF
+
+            #  installing NGINX TO KinD
+          - name: Install NGINX Ingress Controller
+            run: |
+              kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml 
+
            # Service is converted to a LoadBalancer, MetalLB assigns it an IP, and then your INGRESS_IP step will pick it up successfully.     
           - name: Patch ingress-nginx svc → LoadBalancer
             run: |
