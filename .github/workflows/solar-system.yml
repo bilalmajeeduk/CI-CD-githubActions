@@ -121,13 +121,29 @@ jobs:
             echo Testing Image URL using wget 
             wget -q -O - 127.0.0.1:3000/live | grep live
 
-
-        - name: Container Registry Push
+        # push to my personal docker hub account. 
+        - name: Container Registry Push 
           uses: docker/build-push-action@v4
           with:
             context: .
             push: true
             tags: |
                 ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+
+    dev-k8s-deploy:
+      needs: docker
+      runs-on: ubuntu-latest
+      steps: 
+          - name: Checkout Repo current
+            uses: actions/checkout@v4
+            # https://github.com/marketplace/actions/kubectl-tool-installer
+          - name: Install kubectl k8s CLI
+            uses: azure/setup-kubectl@v4
+
+          - name: Fetchingg K8s kubernetes Cluster details info
+            run: | 
+              kubectl version --short
+              echo =========================================================
+              kubectl get nodes
 
             
