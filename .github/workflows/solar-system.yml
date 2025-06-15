@@ -168,7 +168,8 @@ jobs:
               kind get kubeconfig --name ci-cluster > kind-kubeconfig.yaml
               echo "=== KinD kubeconfig ==="
               cat kind-kubeconfig.yaml
-
+          
+             # -R
           - name: Use KinD kubeconfig
             uses: azure/k8s-set-context@v3
             with:
@@ -177,7 +178,7 @@ jobs:
 
           - name: Fetchingg K8s kubernetes Cluster details info
             run: | 
-              kubectl version --client --short
+              kubectl version --client
               echo ***********************a***************A****
               kubectl get nodes
 
