@@ -163,19 +163,7 @@ jobs:
           #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
           #  Export KinD’s kubeconfig to a file
-          - name: Dump KinD kubeconfig
-            run: |
-              kind get kubeconfig --name ci-cluster > kind-kubeconfig.yaml
-              echo "=== KinD kubeconfig ==="
-              cat kind-kubeconfig.yaml
-          
-             # -R
-          - name: Use KinD kubeconfig
-            uses: azure/k8s-set-context@v3
-            with:
-              method: kubeconfig
-              kubeconfig: kind-kubeconfig.yaml
-
+  
           - name: Fetchingg K8s kubernetes Cluster details info
             run: | 
               kubectl version --client
