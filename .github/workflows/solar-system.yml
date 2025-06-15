@@ -154,10 +154,16 @@ jobs:
               echo =========================================================
               kubectl config view --minify --raw
 
-          # - name: Fetchingg K8s kubernetes Cluster details info
-          #   run: | 
-          #     kubectl version --short
-          #     echo =========================================================
-          #     kubectl get nodes
+          - name: Set kubeconfig FILE HERE
+            uses: azure/k8s-set-context@v3
+            with:
+              method: kubeconfig
+              kubeconfig: ${{ secrets.KUBECONFIG }}
+
+          - name: Fetchingg K8s kubernetes Cluster details info
+            run: | 
+              kubectl version --short
+              echo ***********************a***************A****
+              kubectl get nodes
 
             
