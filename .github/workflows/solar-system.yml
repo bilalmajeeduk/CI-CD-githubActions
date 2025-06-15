@@ -170,33 +170,15 @@ jobs:
               echo ***********************a***************A****
               kubectl get nodes
 
-          - name: Deploy MetalLB
+          - name: Deploy MetalLB core
             run: |
               kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
-              cat <<EOF | kubectl apply -f -
-              apiVersion: metallb.io/v1beta1
-              kind: IPAddressPool
-              metadata:
-                name: kind-pool
-                namespace: metallb-system
-              spec:
-                addresses:
-                  - 172.18.0.240-172.18.0.250
-              EOF
-              cat <<EOF | kubectl apply -f -
-              apiVersion: metallb.io/v1beta1
-              kind: L2Advertisement
-              metadata:
-                name: kind-adv
-                namespace: metallb-system
-              EOF
 
-          - name: Wait for MetalLB to be ready
+          - name: Wait for MetalLB controller
             run: |
               kubectl rollout status deployment/controller -n metallb-system --timeout=2m
-              kubectl rollout status deployment/controller    -n metallb-system --timeout=2m
 
-          - name: Configure MetalLB IP pool
+          - name: Configure MetalLB IP pool & L2Advertisement
             run: |
               cat <<EOF | kubectl apply -f -
               apiVersion: metallb.io/v1beta1
@@ -206,12 +188,9 @@ jobs:
                 namespace: metallb-system
               spec:
                 addresses:
-                  - 172.18.0.240-172.18.0.250
+              - 172.18.0.240-172.18.0.250
               EOF
 
-
-          - name: Configure MetalLB L2Advertisement
-            run: |
               cat <<EOF | kubectl apply -f -
               apiVersion: metallb.io/v1beta1
               kind: L2Advertisement
